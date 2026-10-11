@@ -29,21 +29,27 @@ import { useAuthStore } from '../stores/authStore';
 import { SUBJECT_THEMES } from '../lib/constants';
 
 interface DashboardData {
-  user: {
-    name: string;
-    email: string;
-    xp: number;
-    streak: { current: number; longest: number; lastActiveDate: string };
-    badges: string[];
+  user?: {
+    name?: string;
+    email?: string;
+    xp?: number;
+    streak?: { current?: number; longest?: number; lastActiveDate?: string };
+    badges?: string[];
   };
-  stats: {
-    completedConcepts: number;
-    inProgressConcepts: number;
-    totalConcepts: number;
-    completionPercentage: number;
-    quizzesPassed: number;
+  stats?: {
+    completedConcepts?: number;
+    inProgressConcepts?: number;
+    totalConcepts?: number;
+    completionPercentage?: number;
+    quizzesPassed?: number;
   };
-  continueLearning: {
+  overallProgress?: {
+    total?: number;
+    completed?: number;
+    inProgress?: number;
+    percentage?: number;
+  };
+  continueLearning?: {
     concept: {
       _id: string;
       conceptCode: string;
@@ -58,7 +64,8 @@ interface DashboardData {
     videoPositionSec?: number;
     status: string;
   } | null;
-  subjectProgress: {
+  resumeConcept?: any;
+  subjectProgress?: {
     subjectId: string;
     subjectName: string;
     themeKey: string;
@@ -67,13 +74,13 @@ interface DashboardData {
     total: number;
     percentage: number;
   }[];
-  recentActivity: {
+  recentActivity?: {
     date: string;
     minutes: number;
     conceptsTouched: number;
     quizzesTaken: number;
   }[];
-  recommendedNext: {
+  recommendedNext?: {
     _id: string;
     conceptCode: string;
     title: string;
@@ -88,11 +95,15 @@ interface DashboardData {
 export const DashboardPage: React.FC = () => {
   const { user } = useAuthStore();
 
-  const { data: dashboard, isLoading } = useQuery<DashboardData>({
+  const { data: dashboard, isLoading } = useQuery<DashboardData | null>({
     queryKey: ['student-dashboard'],
     queryFn: async () => {
-      const res = await api.get('/users/me/dashboard');
-      return res.data.data;
+      try {
+        const res = await api.get('/users/me/dashboard');
+        return res.data.data;
+      } catch {
+        return null;
+      }
     },
   });
 
@@ -110,9 +121,24 @@ export const DashboardPage: React.FC = () => {
     );
   }
 
-  const streak = dashboard?.user.streak.current ?? (user?.streak?.current || 3);
-  const xp = dashboard?.user.xp ?? (user?.xp || 450);
-  const completionPct = dashboard?.stats.completionPercentage || 24;
+  const streak = dashboard?.user?.streak?.current ?? (user?.streak?.current || 3);
+  const xp = dashboard?.user?.xp ?? (user?.xp || 450);
+  const completionPct =
+    dashboard?.stats?.completionPercentage ??
+    dashboard?.overallProgress?.percentage ??
+    24;
+  const continueItem =
+    dashboard?.continueLearning ||
+    (dashboard?.resumeConcept
+      ? {
+          concept: dashboard.resumeConcept,
+          subjectName: dashboard.resumeConcept.subjectName || 'DBMS & SQL',
+          themeKey: dashboard.resumeConcept.subjectTheme || 'dbms-sql',
+          lastBlockId: dashboard.resumeConcept.lastBlockId,
+          videoPositionSec: dashboard.resumeConcept.videoPositionSec,
+          status: dashboard.resumeConcept.status,
+        }
+      : null);
 
   return (
     <PageTransition className="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-10">
@@ -127,7 +153,7 @@ export const DashboardPage: React.FC = () => {
             <span className="text-xs font-mono text-cyan-400">P0 &amp; P1 High-Priority Preparation</span>
           </div>
           <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Welcome back, <span className="aurora-text">{user?.name || dashboard?.user.name || 'Scholar'}</span>
+            Welcome back, <span className="aurora-text">{user?.name || dashboard?.user?.name || 'Scholar'}</span>
           </h1>
         </div>
 
@@ -152,7 +178,7 @@ export const DashboardPage: React.FC = () => {
       </div>
 
       {/* 2. "Continue Where You Left Off" Hero Card */}
-      {dashboard?.continueLearning ? (
+      {continueItem ? (
         <GradientBorderCard className="p-6 sm:p-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-3 max-w-2xl">
@@ -161,19 +187,19 @@ export const DashboardPage: React.FC = () => {
                   Continue Where You Left Off
                 </span>
                 <SubjectBadge
-                  themeKey={dashboard.continueLearning.themeKey}
-                  name={dashboard.continueLearning.subjectName}
+                  themeKey={continueItem.themeKey}
+                  name={continueItem.subjectName}
                 />
               </div>
 
               <div>
                 <h3 className="font-display text-2xl font-bold text-white tracking-tight">
-                  {dashboard.continueLearning.concept.conceptCode}: {dashboard.continueLearning.concept.title}
+                  {continueItem.concept.conceptCode}: {continueItem.concept.title}
                 </h3>
                 <p className="text-xs sm:text-sm text-[#A9B1D6] mt-1">
                   Resumes directly from your last saved position{' '}
-                  {dashboard.continueLearning.videoPositionSec
-                    ? `(Video: ${Math.floor(dashboard.continueLearning.videoPositionSec / 60)}m)`
+                  {continueItem.videoPositionSec
+                    ? `(Video: ${Math.floor(continueItem.videoPositionSec / 60)}m)`
                     : '(Reading Block)'}
                   .
                 </p>
@@ -181,14 +207,14 @@ export const DashboardPage: React.FC = () => {
 
               <div className="flex items-center gap-3 text-xs font-mono text-[#6B7399]">
                 <Clock className="w-3.5 h-3.5" />
-                <span>{dashboard.continueLearning.concept.estimatedMinutes} mins remaining</span>
+                <span>{continueItem.concept.estimatedMinutes} mins remaining</span>
                 <span>&bull;</span>
-                <DifficultyBadge difficulty={dashboard.continueLearning.concept.difficulty} />
+                <DifficultyBadge difficulty={continueItem.concept.difficulty} />
               </div>
             </div>
 
             <div className="flex-shrink-0">
-              <Link to={`/concepts/${dashboard.continueLearning.concept.slug}`}>
+              <Link to={`/concepts/${continueItem.concept.slug}`}>
                 <Button variant="cta" size="lg" icon={<Play className="w-5 h-5 fill-white" />}>
                   Resume Concept
                 </Button>
@@ -203,7 +229,7 @@ export const DashboardPage: React.FC = () => {
           <p className="text-xs text-[#A9B1D6] max-w-md mx-auto">
             Kickstart the interview master curriculum with Concept C1 &quot;DBMS vs File System&quot;.
           </p>
-          <Link to="/concepts/c1-dbms-vs-file-system">
+          <Link to="/concepts/dbms-vs-file-system-dbms-vs-rdbms">
             <Button variant="cta" size="sm">
               Launch Concept C1 &rarr;
             </Button>
@@ -215,14 +241,14 @@ export const DashboardPage: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatTile
           title="Mastered Concepts"
-          value={`${dashboard?.stats.completedConcepts || 1} / ${dashboard?.stats.totalConcepts || 184}`}
+          value={`${dashboard?.stats?.completedConcepts ?? dashboard?.overallProgress?.completed ?? 1} / ${dashboard?.stats?.totalConcepts ?? dashboard?.overallProgress?.total ?? 184}`}
           subtitle={`${completionPct}% of Interview Core`}
           icon={<CheckCircle2 className="w-5 h-5 text-emerald-400" />}
           accentColor="emerald"
         />
         <StatTile
           title="Quizzes Passed"
-          value={dashboard?.stats.quizzesPassed || 1}
+          value={dashboard?.stats?.quizzesPassed ?? 1}
           subtitle="Passing threshold &ge; 80%"
           icon={<Award className="w-5 h-5 text-purple-400" />}
           accentColor="purple"

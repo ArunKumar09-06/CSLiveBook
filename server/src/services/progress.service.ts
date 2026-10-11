@@ -197,6 +197,49 @@ export class ProgressService {
       .limit(7)
       .lean();
 
+    const stats = {
+      completedConcepts: progressSummary.completed,
+      inProgressConcepts: progressSummary.inProgress,
+      totalConcepts: progressSummary.totalConcepts,
+      completionPercentage: progressSummary.overallPercentage,
+      quizzesPassed: progressSummary.completed,
+    };
+
+    const continueLearning = resumeConcept
+      ? {
+          concept: {
+            _id: (resumeConcept as any)._id.toString(),
+            conceptCode: (resumeConcept as any).conceptCode,
+            title: (resumeConcept as any).title,
+            slug: (resumeConcept as any).slug,
+            difficulty: (resumeConcept as any).difficulty,
+            estimatedMinutes: (resumeConcept as any).estimatedMinutes,
+          },
+          subjectName: (resumeConcept as any).subjectName || 'DBMS & SQL',
+          themeKey: (resumeConcept as any).subjectTheme || 'dbms-sql',
+          lastBlockId: (resumeConcept as any).lastBlockId,
+          videoPositionSec: (resumeConcept as any).videoPositionSec,
+          status: (resumeConcept as any).status,
+        }
+      : null;
+
+    const recommendedNext = await Promise.all(
+      recommendedConcepts.map(async (c) => {
+        const mod = await Module.findById(c.moduleId).lean();
+        const subject = mod ? await Subject.findById(mod.subjectId).lean() : null;
+        return {
+          _id: c._id.toString(),
+          conceptCode: c.conceptCode,
+          title: c.title,
+          slug: c.slug,
+          subjectName: subject?.name || 'Computer Science',
+          themeKey: subject?.themeKey || 'dbms-sql',
+          estimatedMinutes: c.estimatedMinutes || 15,
+          difficulty: c.difficulty || 'BEGINNER',
+        };
+      })
+    );
+
     return {
       user: {
         name: user.name,
@@ -206,15 +249,18 @@ export class ProgressService {
         streak: user.streak,
         badges: user.badges,
       },
+      stats,
       overallProgress: {
         total: progressSummary.totalConcepts,
         completed: progressSummary.completed,
         inProgress: progressSummary.inProgress,
         percentage: progressSummary.overallPercentage,
       },
+      continueLearning,
       resumeConcept,
       subjectProgress: progressSummary.subjectProgress,
       recommendedConcepts,
+      recommendedNext,
       recentActivity: activity.reverse(),
     };
   }

@@ -166,7 +166,13 @@ export class CurriculumService {
   }
 
   static async getConceptBySlug(slug: string) {
-    const concept = await Concept.findOne({ slug, isPublished: true }).lean();
+    let concept = await Concept.findOne({ slug, isPublished: true }).lean();
+    if (!concept && (slug === 'c1-dbms-vs-file-system' || slug === 'c1')) {
+      concept = await Concept.findOne({
+        $or: [{ conceptCode: 'C1' }, { slug: 'dbms-vs-file-system-dbms-vs-rdbms' }],
+        isPublished: true,
+      }).lean();
+    }
     if (!concept) {
       throw new AppError('Concept not found', 404, 'NOT_FOUND');
     }
