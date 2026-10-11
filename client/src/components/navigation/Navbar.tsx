@@ -15,6 +15,7 @@ export const Navbar: React.FC = () => {
   const navLinks = [
     { label: 'Curriculum', path: '/subjects' },
     { label: 'Dashboard', path: '/dashboard' },
+    ...(user?.role === 'ADMIN' ? [{ label: 'Admin Console', path: '/admin' }] : []),
     { label: 'Design System', path: '/design' },
   ];
 

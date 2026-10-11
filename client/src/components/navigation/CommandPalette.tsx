@@ -16,6 +16,7 @@ import {
   Server,
   Network,
   Sparkles,
+  ShieldCheck,
 } from 'lucide-react';
 import { useThemeStore } from '../../stores/themeStore';
 
@@ -101,6 +102,13 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
               >
                 <Palette className="w-4 h-4 text-pink-400" />
                 <span>Design System Showcase</span>
+              </Command.Item>
+              <Command.Item
+                onSelect={() => runCommand(() => navigate('/admin'))}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-[#F5F7FF] hover:bg-white/10 hover:text-white cursor-pointer transition-colors"
+              >
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <span>Admin Console & Authoring</span>
               </Command.Item>
             </Command.Group>
 

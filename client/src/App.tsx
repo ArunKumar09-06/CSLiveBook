@@ -14,6 +14,7 @@ import { RegisterPage } from './pages/RegisterPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
 import { ResetPasswordPage } from './pages/ResetPasswordPage';
 import { DesignShowcasePage } from './pages/DesignShowcasePage';
+import { AdminConsolePage } from './pages/AdminConsolePage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 const queryClient = new QueryClient({
@@ -58,6 +59,9 @@ export default function App() {
             {/* Design System Interactive Showcase */}
             <Route path="design" element={<DesignShowcasePage />} />
             <Route path="design-system" element={<Navigate to="/design" replace />} />
+
+            {/* Admin Console */}
+            <Route path="admin" element={<AdminConsolePage />} />
 
             {/* 404 Catch-All */}
             <Route path="*" element={<NotFoundPage />} />
