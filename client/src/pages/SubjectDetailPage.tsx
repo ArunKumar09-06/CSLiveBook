@@ -85,10 +85,10 @@ export const SubjectDetailPage: React.FC = () => {
           </p>
 
           <div className="flex flex-wrap items-center gap-4 pt-2 text-xs font-mono text-[#A9B1D6]">
-            <span>{modules.length} Structured Modules</span>
+            <span>{(modules || []).length} Structured Modules</span>
             <span>&bull;</span>
             <span>
-              {modules.reduce((acc: number, m: { concepts?: unknown[] }) => acc + (m.concepts?.length || 0), 0)} High-Priority Concepts
+              {(modules || []).reduce((acc: number, m: { concepts?: unknown[] }) => acc + (m.concepts?.length || 0), 0)} High-Priority Concepts
             </span>
           </div>
         </div>
@@ -106,7 +106,7 @@ export const SubjectDetailPage: React.FC = () => {
         </div>
 
         <div className="space-y-6">
-          {modules.map((mod: { _id: string; order: number; name: string; description: string; concepts?: Array<{ _id: string; conceptCode: string; title: string; slug: string; difficulty: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED'; estimatedMinutes: number }> }, idx: number) => (
+          {(modules || []).map((mod: { _id: string; order: number; name: string; description: string; concepts?: Array<{ _id: string; conceptCode: string; title: string; slug: string; difficulty: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED'; estimatedMinutes: number }> }, idx: number) => (
             <GlassCard key={mod._id} className="p-6 sm:p-8 space-y-6 border border-surface-border group">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-surface-border/60">
                 <div className="flex items-center gap-3">

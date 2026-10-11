@@ -265,7 +265,7 @@ export const AdminConsolePage: React.FC = () => {
               </h3>
               <div className="divide-y divide-surface-border/50 text-xs font-mono">
                 {(analytics?.hardestAssessments || []).length > 0 ? (
-                  analytics.hardestAssessments.map((a: any) => (
+                  (analytics?.hardestAssessments || []).map((a: any) => (
                     <div key={a.assessmentId} className="py-2.5 flex items-center justify-between">
                       <span className="text-white">{a.title}</span>
                       <span className="text-cyan-400 font-bold">{a.avgScore}% avg</span>

@@ -252,15 +252,15 @@ export const ConceptPage: React.FC = () => {
             </div>
 
             <div className="space-y-4 text-xs font-mono">
-              {(curriculumTree as Array<{ _id: string; name: string; modules: Array<{ _id: string; name: string; concepts: Array<{ _id: string; conceptCode: string; title: string; slug: string }> }> }>).map((subj) => (
+              {(Array.isArray(curriculumTree) ? curriculumTree : []).map((subj: any) => (
                 <div key={subj._id} className="space-y-1.5">
                   <div className="font-bold text-white uppercase text-[11px] tracking-wider pt-1">
                     {subj.name}
                   </div>
-                  {subj.modules?.map((mod) => (
+                  {(subj.modules || []).map((mod: any) => (
                     <div key={mod._id} className="pl-2 border-l border-surface-border/50 space-y-1">
                       <div className="text-[11px] text-[#A9B1D6] font-semibold">{mod.name}</div>
-                      {mod.concepts?.map((c) => {
+                      {(mod.concepts || []).map((c: any) => {
                         const isCurrent = c.slug === slug;
                         return (
                           <Link
@@ -310,7 +310,7 @@ export const ConceptPage: React.FC = () => {
           {/* TAB 1: LEARN (Content Blocks System) */}
           {activeTab === 'learn' && (
             <div className="space-y-4">
-              {blocks.map((block, idx) => (
+              {(Array.isArray(blocks) ? blocks : []).map((block, idx) => (
                 <BlockRenderer key={block.id || idx} block={block} />
               ))}
 
@@ -448,7 +448,7 @@ export const ConceptPage: React.FC = () => {
               <div className="p-4 rounded-xl bg-pink-500/10 border border-pink-500/20 text-pink-300 text-xs">
                 <strong>Interview Intelligence Register:</strong> High-frequency questions asked at Google, Meta, Amazon, and Stripe for backend/systems engineering positions.
               </div>
-              {blocks
+              {(Array.isArray(blocks) ? blocks : [])
                 .filter((b) => b.type === 'interview_question')
                 .map((b, idx) => (
                   <BlockRenderer key={idx} block={b} />
@@ -464,7 +464,7 @@ export const ConceptPage: React.FC = () => {
               On This Page
             </span>
             <nav className="space-y-1 text-xs">
-              {toc.length > 0 ? (
+              {Array.isArray(toc) && toc.length > 0 ? (
                 toc.map((item: { id: string; text: string; level: number }) => (
                   <a
                     key={item.id}

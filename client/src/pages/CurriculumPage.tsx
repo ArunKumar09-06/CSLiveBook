@@ -156,15 +156,15 @@ export const CurriculumPage: React.FC = () => {
                     {subject.name}
                   </h2>
                   <span className="text-xs font-mono text-[#6B7399] ml-auto">
-                    {subject.modules.reduce((acc, m) => acc + (m.concepts?.length || 0), 0)} Concepts
+                    {(subject.modules || []).reduce((acc, m) => acc + (m.concepts?.length || 0), 0)} Concepts
                   </span>
                 </div>
 
                 {/* Modules Grid / List */}
                 <div className="space-y-3">
-                  {subject.modules.map((module) => {
+                  {(subject.modules || []).map((module) => {
                     const isExpanded = expandedModules[module._id] !== false; // Default open
-                    const matchingConcepts = module.concepts.filter((c) =>
+                    const matchingConcepts = (module.concepts || []).filter((c) =>
                       searchQuery ? c.title.toLowerCase().includes(searchQuery.toLowerCase()) : true
                     );
 

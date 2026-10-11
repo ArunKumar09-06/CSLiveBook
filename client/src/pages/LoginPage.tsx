@@ -45,9 +45,15 @@ export const LoginPage: React.FC = () => {
   const onSubmit = async (data: LoginFormData) => {
     setIsSubmitting(true);
     try {
-      await login(data.email, data.password);
-      toast.success('Welcome back to CSF Livebook!');
-      navigate(from, { replace: true });
+      const loggedUser = await login(data.email, data.password);
+      toast.success(`Welcome back, ${loggedUser.name}!`);
+      if (from && from !== '/dashboard') {
+        navigate(from, { replace: true });
+      } else if (loggedUser.role === 'ADMIN') {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
     } catch (err: unknown) {
       const message =
         (err as { response?: { data?: { error?: { message?: string } } } })?.response?.data?.error

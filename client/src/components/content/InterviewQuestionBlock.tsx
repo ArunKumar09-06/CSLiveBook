@@ -80,7 +80,7 @@ export const InterviewQuestionBlock: React.FC<{ block: InterviewQuestionBlockDat
                 <span className="text-xs font-mono text-purple-300 uppercase tracking-wider block">
                   Interviewer Follow-Up Drill Chains:
                 </span>
-                {block.followUps.map((fu, idx) => {
+                {(block.followUps || []).map((fu, idx) => {
                   const isOpen = openFollowUp === idx;
                   return (
                     <div

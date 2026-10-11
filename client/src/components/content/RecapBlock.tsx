@@ -5,10 +5,13 @@ export interface RecapBlockData {
   type: 'recap';
   id?: string;
   title?: string;
-  items: string[];
+  items?: string[];
+  keyPoints?: string[];
 }
 
 export const RecapBlock: React.FC<{ block: RecapBlockData }> = ({ block }) => {
+  const items = block.items || block.keyPoints || [];
+
   return (
     <div
       id={block.id}
@@ -29,7 +32,7 @@ export const RecapBlock: React.FC<{ block: RecapBlockData }> = ({ block }) => {
       </div>
 
       <div className="space-y-3">
-        {block.items.map((item, idx) => (
+        {items.map((item, idx) => (
           <div
             key={idx}
             className="flex items-start gap-3.5 p-3.5 rounded-xl bg-white/5 border border-surface-border text-xs sm:text-sm text-[#F5F7FF] leading-relaxed"

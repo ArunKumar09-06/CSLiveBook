@@ -135,7 +135,7 @@ export const CheatSheetViewer: React.FC<CheatSheetViewerProps> = ({ data, classN
 
           {/* Color-Coded Sections Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {data.sections.map((sec, idx) => (
+            {(data?.sections || []).map((sec, idx) => (
               <div
                 key={idx}
                 className="p-5 rounded-2xl glass-panel bg-white/5 border border-surface-border/80 space-y-3.5 print:bg-gray-50 print:border-gray-200"
@@ -150,7 +150,7 @@ export const CheatSheetViewer: React.FC<CheatSheetViewerProps> = ({ data, classN
                 {/* Items */}
                 {sec.items && (
                   <ul className="space-y-2 text-xs text-[#A9B1D6] print:text-gray-800">
-                    {sec.items.map((item, i) => (
+                    {(sec.items || []).map((item, i) => (
                       <li key={i} className="flex items-start gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-1.5 flex-shrink-0 print:bg-purple-600" />
                         <span className="leading-relaxed">{item}</span>
@@ -165,15 +165,15 @@ export const CheatSheetViewer: React.FC<CheatSheetViewerProps> = ({ data, classN
                     <table className="w-full text-left text-[11px] font-mono">
                       <thead className="text-[#A9B1D6] border-b border-surface-border">
                         <tr>
-                          {sec.table.headers.map((h, i) => (
+                          {(sec.table.headers || []).map((h, i) => (
                             <th key={i} className="pb-1 font-semibold">{h}</th>
                           ))}
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-surface-border/50 text-[#F5F7FF] print:text-gray-900">
-                        {sec.table.rows.map((row, rIdx) => (
+                        {(sec.table.rows || []).map((row, rIdx) => (
                           <tr key={rIdx}>
-                            {row.map((cell, cIdx) => (
+                            {(row || []).map((cell, cIdx) => (
                               <td key={cIdx} className="py-1.5 pr-2">{cell}</td>
                             ))}
                           </tr>

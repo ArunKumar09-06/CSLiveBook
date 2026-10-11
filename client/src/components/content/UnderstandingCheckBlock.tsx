@@ -22,7 +22,8 @@ export const UnderstandingCheckBlock: React.FC<{ block: UnderstandingCheckBlockD
 }) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const selectedOption = block.options.find((o) => o.id === selectedId);
+  const options = block.options || [];
+  const selectedOption = options.find((o) => o.id === selectedId);
 
   return (
     <div
@@ -40,7 +41,7 @@ export const UnderstandingCheckBlock: React.FC<{ block: UnderstandingCheckBlockD
 
       {/* Options */}
       <div className="space-y-2 pt-1">
-        {block.options.map((opt) => {
+        {options.map((opt) => {
           const isSelected = selectedId === opt.id;
           return (
             <button
