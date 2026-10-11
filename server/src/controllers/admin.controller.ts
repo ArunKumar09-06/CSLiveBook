@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { AdminService } from '../services/admin.service';
+import { AdminService } from '../services/admin.service.js';
 
 export class AdminController {
   static async createSubject(req: Request, res: Response, next: NextFunction): Promise<void> {

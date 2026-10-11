@@ -4,6 +4,7 @@ import Lenis from 'lenis';
 import { Toaster } from 'sonner';
 import { Navbar } from '../navigation/Navbar';
 import { Footer } from '../navigation/Footer';
+import { OfflineIndicator } from './OfflineIndicator';
 import { useThemeStore } from '../../stores/themeStore';
 
 export const RootLayout: React.FC = () => {
@@ -51,6 +52,9 @@ export const RootLayout: React.FC = () => {
 
       {/* Footer */}
       <Footer />
+
+      {/* Offline Status Detector */}
+      <OfflineIndicator />
 
       {/* Sonner Toast Notification Center */}
       <Toaster

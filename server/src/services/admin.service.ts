@@ -1,14 +1,14 @@
 import { Types } from 'mongoose';
-import { Subject, ISubject } from '../models/Subject';
-import { Module, IModule } from '../models/Module';
-import { Concept, IConcept } from '../models/Concept';
-import { ConceptContent } from '../models/ConceptContent';
-import { ConceptResource } from '../models/ConceptResource';
-import { Assessment, IAssessment, IQuestion } from '../models/Assessment';
-import { AssessmentAttempt } from '../models/AssessmentAttempt';
-import { User } from '../models/User';
-import { UserConceptProgress } from '../models/UserConceptProgress';
-import { AppError } from '../middleware/errorHandler';
+import { Subject, ISubject } from '../models/Subject.js';
+import { Module, IModule } from '../models/Module.js';
+import { Concept, IConcept } from '../models/Concept.js';
+import { ConceptContent } from '../models/ConceptContent.js';
+import { ConceptResource } from '../models/ConceptResource.js';
+import { Assessment, IAssessment, IQuestion } from '../models/Assessment.js';
+import { AssessmentAttempt } from '../models/AssessmentAttempt.js';
+import { User } from '../models/User.js';
+import { UserConceptProgress } from '../models/UserConceptProgress.js';
+import { AppError } from '../middleware/errorHandler.js';
 
 export interface CreateSubjectInput {
   name: string;
@@ -158,7 +158,7 @@ export class AdminService {
         level: b.level || 2,
       }));
 
-    content.blocks = blocks;
+    content.blocks = blocks as any;
     content.version = (content.version || 1) + 1;
     content.tableOfContents = tableOfContents;
     await content.save();
@@ -342,7 +342,7 @@ export class AdminService {
         passRate: totalAttempts > 0 ? Math.round((passedAttempts / totalAttempts) * 100) : 0,
       },
       recentSignups,
-      hardestAssessments: conceptScores.map((c) => ({
+      hardestAssessments: conceptScores.map((c: any) => ({
         assessmentId: c._id,
         title: c.assessment.title,
         avgScore: Math.round(c.avgScore),

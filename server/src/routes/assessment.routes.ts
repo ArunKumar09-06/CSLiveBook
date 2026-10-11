@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { AssessmentController } from '../controllers/assessment.controller';
-import { authenticate } from '../middleware/auth';
+import { AssessmentController } from '../controllers/assessment.controller.js';
+import { authenticate } from '../middleware/auth.js';
 
 export const assessmentRouter = Router();
 

@@ -1,0 +1,16 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Allow: /curriculum
+Allow: /subjects/
+Allow: /concepts/
+Allow: /design
+
+# Disallow private user states and administrative routes
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /profile/
+Disallow: /reset-password/
+
+# Sitemap location
+Sitemap: https://csflivebook.com/sitemap.xml

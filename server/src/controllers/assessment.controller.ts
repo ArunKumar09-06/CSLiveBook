@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { AssessmentService } from '../services/assessment.service';
+import { AssessmentService } from '../services/assessment.service.js';
 
 export class AssessmentController {
   static async startAttempt(req: Request, res: Response, next: NextFunction): Promise<void> {

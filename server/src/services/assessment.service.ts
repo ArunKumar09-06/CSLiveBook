@@ -1,9 +1,9 @@
 import { Types } from 'mongoose';
-import { Assessment, IAssessment, IQuestion } from '../models/Assessment';
-import { AssessmentAttempt, IAssessmentAttempt } from '../models/AssessmentAttempt';
-import { UserConceptProgress } from '../models/UserConceptProgress';
-import { User } from '../models/User';
-import { ActivityLog } from '../models/ActivityLog';
+import { Assessment, IAssessment, IQuestion } from '../models/Assessment.js';
+import { AssessmentAttempt, IAssessmentAttempt } from '../models/AssessmentAttempt.js';
+import { UserConceptProgress } from '../models/UserConceptProgress.js';
+import { User } from '../models/User.js';
+import { ActivityLog } from '../models/ActivityLog.js';
 import { QuestionType } from '@csf/shared';
 
 export interface SubmitAnswerInput {
@@ -156,7 +156,7 @@ export class AssessmentService {
       status: 'IN_PROGRESS',
       score: 0,
       rawScore: 0,
-      maxScore: assessment.questions.reduce((acc, q) => acc + (q.points || 1), 0),
+      maxScore: assessment.questions.reduce((acc: number, q: IQuestion) => acc + (q.points || 1), 0),
       startedAt: new Date(),
       answers: [],
     });
@@ -183,7 +183,7 @@ export class AssessmentService {
       throw new Error('Active assessment attempt not found');
     }
 
-    const existingAnswerIdx = attempt.answers.findIndex((a) => a.questionId === questionId);
+    const existingAnswerIdx = attempt.answers.findIndex((a: any) => a.questionId === questionId);
     if (existingAnswerIdx >= 0) {
       attempt.answers[existingAnswerIdx].response = response;
     } else {
@@ -239,7 +239,7 @@ export class AssessmentService {
     const gradedQuestions: GradedQuestionResult[] = [];
     const attemptAnswers = [];
     let rawScore = 0;
-    const maxScore = assessment.questions.reduce((acc, q) => acc + (q.points || 1), 0);
+    const maxScore = assessment.questions.reduce((acc: number, q: IQuestion) => acc + (q.points || 1), 0);
 
     for (const question of assessment.questions) {
       const qIdStr = question._id ? question._id.toString() : '';
@@ -368,9 +368,9 @@ export class AssessmentService {
       throw new Error('Assessment not found');
     }
 
-    const gradedQuestions: GradedQuestionResult[] = assessment.questions.map((q) => {
+    const gradedQuestions: GradedQuestionResult[] = assessment.questions.map((q: IQuestion) => {
       const qIdStr = q._id ? q._id.toString() : '';
-      const savedAns = attempt.answers.find((a) => a.questionId === qIdStr);
+      const savedAns = attempt.answers.find((a: any) => a.questionId === qIdStr);
       return {
         questionId: qIdStr,
         type: q.type,
