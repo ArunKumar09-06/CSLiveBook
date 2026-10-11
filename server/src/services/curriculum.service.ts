@@ -211,7 +211,12 @@ export class CurriculumService {
 
   static async getConceptContent(conceptId: string) {
     const content = await ConceptContent.findOne({ conceptId }).lean();
-    if (!content) {
+    if (content && content.blocks && content.blocks.length > 0) {
+      return content;
+    }
+
+    const concept = await Concept.findById(conceptId).lean();
+    if (!concept) {
       return {
         conceptId,
         blocks: [],
@@ -219,7 +224,64 @@ export class CurriculumService {
         tableOfContents: [],
       };
     }
-    return content;
+
+    const defaultBlocks = [
+      {
+        id: `b-h1-${concept._id}`,
+        type: 'heading',
+        level: 1,
+        text: `${concept.conceptCode}: ${concept.title}`,
+      },
+      {
+        id: `b-callout-${concept._id}`,
+        type: 'callout',
+        variant: 'info',
+        title: 'Core Interview Syllabus Focus',
+        content: concept.description,
+      },
+      {
+        id: `b-text-${concept._id}`,
+        type: 'text',
+        content: `### Architecture & Engineering Mechanics\n\nIn technical interviews, **${concept.title}** evaluates foundational system design and algorithmic depth. Key considerations include invariant enforcement, operational overhead, and scalability under real-world concurrent workloads.`,
+      },
+      {
+        id: `b-iq-${concept._id}`,
+        type: 'interview_question',
+        question: `How would you explain the core mechanism and design rationale behind ${concept.title}?`,
+        frequency: 'VERY_HIGH',
+        modelAnswer: `When explaining ${concept.title}, distinguish the logical contract from the underlying physical storage or execution model. Focus on latency, memory footprint, data integrity, and failure recovery protocols.`,
+        followUps: [
+          {
+            question: `What anomalies or bottlenecks occur if this invariant is violated in high-throughput systems?`,
+            answer: `System failures such as race conditions, resource contention, cache thrashing, or cascading aborts emerge. Robust implementations enforce explicit bounds, transaction logs, and fallback protocols.`,
+          },
+        ],
+      },
+      {
+        id: `b-recap-${concept._id}`,
+        type: 'recap',
+        title: `High-Yield Takeaways for ${concept.conceptCode}`,
+        keyPoints: [
+          `Master the primary definitions and requirements of ${concept.title}.`,
+          `Be ready to write or trace production scenarios on a whiteboard or virtual IDE.`,
+          `Highlight trade-offs between simplicity and scalability during technical discussions.`,
+        ],
+      },
+    ];
+
+    const tableOfContents = [
+      { id: `b-h1-${concept._id}`, text: `${concept.conceptCode}: ${concept.title}`, level: 1 },
+      { id: `b-text-${concept._id}`, text: 'Architecture & Engineering Mechanics', level: 2 },
+      { id: `b-iq-${concept._id}`, text: 'Interview Preparation', level: 2 },
+      { id: `b-recap-${concept._id}`, text: 'High-Yield Takeaways', level: 2 },
+    ];
+
+    return {
+      conceptId,
+      blocks: defaultBlocks,
+      version: 1,
+      tableOfContents,
+    };
   }
 
   static async getConceptResources(conceptId: string) {
