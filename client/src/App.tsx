@@ -4,6 +4,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RootLayout } from './components/layout/RootLayout';
 import { LandingPage } from './pages/LandingPage';
 import { CurriculumPage } from './pages/CurriculumPage';
+import { SubjectDetailPage } from './pages/SubjectDetailPage';
+import { ConceptPage } from './pages/ConceptPage';
+import { DashboardPage } from './pages/DashboardPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
@@ -29,9 +32,16 @@ export default function App() {
             {/* Public Landing Page */}
             <Route index element={<LandingPage />} />
 
-            {/* Curriculum Tree (184 concepts) */}
+            {/* Student Dashboard */}
+            <Route path="dashboard" element={<DashboardPage />} />
+
+            {/* Curriculum Tree & Subject Roadmaps */}
             <Route path="curriculum" element={<CurriculumPage />} />
             <Route path="subjects" element={<CurriculumPage />} />
+            <Route path="subjects/:slug" element={<SubjectDetailPage />} />
+
+            {/* Master Concept Experience (3-column, blocks, video, cheatsheet, quiz) */}
+            <Route path="concepts/:slug" element={<ConceptPage />} />
 
             {/* Auth Routes with 3D DataCube Scene */}
             <Route path="login" element={<LoginPage />} />
