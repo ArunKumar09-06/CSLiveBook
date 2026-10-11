@@ -22,6 +22,8 @@ export interface IUser extends Document {
   streak: IUserStreak;
   xp: number;
   badges: string[];
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -44,6 +46,8 @@ const UserSchema = new Schema<IUser>(
     },
     xp: { type: Number, default: 0 },
     badges: { type: [String], default: [] },
+    resetPasswordToken: { type: String, select: false },
+    resetPasswordExpires: { type: Date, select: false },
   },
   { timestamps: true }
 );

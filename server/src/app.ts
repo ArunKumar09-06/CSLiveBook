@@ -12,6 +12,7 @@ import { httpLogger } from './middleware/logger.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { notFoundHandler } from './middleware/notFound.js';
 import { healthRouter } from './routes/health.routes.js';
+import { authRouter } from './routes/auth.routes.js';
 
 export const createApp = (): Express => {
   const app = express();
@@ -66,9 +67,10 @@ export const createApp = (): Express => {
   // Health and readiness probes (at root level as per standard ops practice)
   app.use('/', healthRouter);
 
-  // API v1 router prefix placeholder
+  // API v1 router
   const apiRouter = express.Router();
   apiRouter.use('/', healthRouter);
+  apiRouter.use('/auth', authRouter);
   app.use('/api/v1', apiRouter);
 
   // 404 & Centralized Error Handler
