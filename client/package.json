@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@csf/shared": "*",
+    "@hookform/resolvers": "^5.9.1",
     "@react-three/drei": "^9.106.0",
     "@react-three/fiber": "^8.16.8",
     "@react-three/postprocessing": "^2.16.2",
