@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
   Flame,
@@ -96,6 +96,10 @@ interface DashboardData {
 export const DashboardPage: React.FC = () => {
   const { user } = useAuthStore();
 
+  if (user?.role === 'ADMIN') {
+    return <Navigate to="/admin" replace />;
+  }
+
   const { data: dashboard, isLoading } = useQuery<DashboardData | null>({
     queryKey: ['student-dashboard'],
     queryFn: async () => {
@@ -143,29 +147,6 @@ export const DashboardPage: React.FC = () => {
 
   return (
     <PageTransition className="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-10">
-      {/* Admin Mode Switcher Banner */}
-      {user?.role === 'ADMIN' && (
-        <div className="p-4 rounded-2xl glass-panel border border-emerald-500/40 bg-emerald-950/20 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg shadow-emerald-950/30">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30 flex-shrink-0">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="font-display font-bold text-sm text-white flex items-center gap-2">
-                <span>Administrator Mode Active</span>
-                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">ADMIN</span>
-              </div>
-              <div className="text-xs text-[#A9B1D6]">You have full access to curriculum authoring, block editor, and platform analytics.</div>
-            </div>
-          </div>
-          <Link to="/admin" className="flex-shrink-0">
-            <Button variant="cta" size="sm" icon={<ShieldCheck className="w-4 h-4" />}>
-              Open Admin Console &rarr;
-            </Button>
-          </Link>
-        </div>
-      )}
-
       {/* 1. Header Greeting & Streak Flame */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-surface-border">
         <div>
@@ -308,15 +289,18 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {(dashboard?.subjectProgress || Object.entries(SUBJECT_THEMES).map(([k, t]) => ({
-            subjectId: k,
-            subjectName: t.name,
-            themeKey: k,
-            slug: k,
-            completed: k === 'dbms' ? 1 : 0,
-            total: k === 'dbms' ? 38 : 25,
-            percentage: k === 'dbms' ? 3 : 0,
-          }))).map((subj) => (
+          {(Array.isArray(dashboard?.subjectProgress)
+            ? dashboard.subjectProgress
+            : Object.entries(SUBJECT_THEMES).map(([k, t]) => ({
+                subjectId: k,
+                subjectName: t.name,
+                themeKey: k,
+                slug: k,
+                completed: k === 'dbms' ? 1 : 0,
+                total: k === 'dbms' ? 38 : 25,
+                percentage: k === 'dbms' ? 3 : 0,
+              }))
+          ).map((subj) => (
             <GlassCard key={subj.subjectId} className="p-5 flex flex-col justify-between space-y-4 group">
               <div>
                 <div className="flex items-start justify-between">

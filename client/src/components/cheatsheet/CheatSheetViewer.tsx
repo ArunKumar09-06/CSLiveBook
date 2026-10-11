@@ -117,10 +117,10 @@ export const CheatSheetViewer: React.FC<CheatSheetViewerProps> = ({ data, classN
           <div className="border-b border-surface-border pb-6 flex items-start justify-between">
             <div className="space-y-1">
               <div className="text-xs font-mono text-cyan-400 font-bold uppercase tracking-wider print:text-blue-700">
-                CSF Livebook Master Curriculum &bull; Concept {data.conceptCode}
+                CSF Livebook Master Curriculum &bull; Concept {data?.conceptCode || 'C1'}
               </div>
               <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white print:text-black">
-                {data.title}
+                {data?.title || (data as any)?.conceptTitle || 'Master Cheat Sheet'}
               </h2>
             </div>
             <div className="text-right hidden sm:block">
@@ -150,12 +150,18 @@ export const CheatSheetViewer: React.FC<CheatSheetViewerProps> = ({ data, classN
                 {/* Items */}
                 {sec.items && (
                   <ul className="space-y-2 text-xs text-[#A9B1D6] print:text-gray-800">
-                    {(sec.items || []).map((item, i) => (
-                      <li key={i} className="flex items-start gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-1.5 flex-shrink-0 print:bg-purple-600" />
-                        <span className="leading-relaxed">{item}</span>
-                      </li>
-                    ))}
+                    {(sec.items || []).map((item: any, i) => {
+                      const text =
+                        typeof item === 'string'
+                          ? item
+                          : `${item?.label ? `${item.label}: ` : ''}${item?.description || ''}`;
+                      return (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-1.5 flex-shrink-0 print:bg-purple-600" />
+                          <span className="leading-relaxed">{text}</span>
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
 
@@ -165,13 +171,13 @@ export const CheatSheetViewer: React.FC<CheatSheetViewerProps> = ({ data, classN
                     <table className="w-full text-left text-[11px] font-mono">
                       <thead className="text-[#A9B1D6] border-b border-surface-border">
                         <tr>
-                          {(sec.table.headers || []).map((h, i) => (
+                          {(sec.table?.headers || []).map((h, i) => (
                             <th key={i} className="pb-1 font-semibold">{h}</th>
                           ))}
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-surface-border/50 text-[#F5F7FF] print:text-gray-900">
-                        {(sec.table.rows || []).map((row, rIdx) => (
+                        {(sec.table?.rows || []).map((row, rIdx) => (
                           <tr key={rIdx}>
                             {(row || []).map((cell, cIdx) => (
                               <td key={cIdx} className="py-1.5 pr-2">{cell}</td>

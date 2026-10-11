@@ -63,7 +63,7 @@ export const CalloutBlock: React.FC<{ block: CalloutBlockData }> = ({ block }) =
           </h4>
         )}
         <div className="text-xs sm:text-sm text-[#A9B1D6] leading-relaxed">
-          {block.text}
+          {block.text || (block as unknown as { content?: string }).content || ''}
         </div>
       </div>
     </div>

@@ -68,7 +68,9 @@ export const CurriculumPage: React.FC = () => {
     }));
   };
 
-  const filteredCurriculum = curriculum.filter((subj) => {
+  const safeCurriculum = Array.isArray(curriculum) ? curriculum : [];
+
+  const filteredCurriculum = safeCurriculum.filter((subj) => {
     if (selectedSubject !== 'all' && subj.slug !== selectedSubject) {
       return false;
     }
@@ -105,7 +107,7 @@ export const CurriculumPage: React.FC = () => {
           >
             All Subjects
           </button>
-          {curriculum.map((subj) => (
+          {safeCurriculum.map((subj) => (
             <button
               key={subj._id}
               onClick={() => setSelectedSubject(subj.slug)}

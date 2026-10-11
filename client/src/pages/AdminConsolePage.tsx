@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
@@ -78,7 +79,7 @@ export const AdminConsolePage: React.FC = () => {
   });
 
   // Flat list of all concepts for editor selector
-  const allConcepts = curriculum.flatMap((s: any) =>
+  const allConcepts = (Array.isArray(curriculum) ? curriculum : []).flatMap((s: any) =>
     (s.modules || []).flatMap((m: any) =>
       (m.concepts || []).map((c: any) => ({
         ...c,
@@ -169,6 +170,30 @@ export const AdminConsolePage: React.FC = () => {
     { id: 'editor', label: 'Content Block Editor', icon: <FileEdit className="w-4 h-4" /> },
     { id: 'resources', label: 'Resource Manager', icon: <Play className="w-4 h-4" /> },
   ];
+
+  if (user?.role !== 'ADMIN') {
+    return (
+      <PageTransition className="max-w-md mx-auto my-20 p-8 glass-panel border border-rose-500/30 text-center space-y-4 rounded-3xl">
+        <div className="w-14 h-14 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-400 flex items-center justify-center mx-auto">
+          <ShieldCheck className="w-7 h-7" />
+        </div>
+        <div className="space-y-1">
+          <span className="text-xs font-mono uppercase text-rose-400 font-bold">Privilege Boundary</span>
+          <h2 className="font-display font-bold text-2xl text-white">Administrator Access Required</h2>
+          <p className="text-xs text-[#A9B1D6] leading-relaxed">
+            You must be authenticated with an Administrator account (<code className="font-mono text-purple-300">admin@csflivebook.com</code>) to access the Authoring Suite and platform management console.
+          </p>
+        </div>
+        <div className="pt-2">
+          <Link to="/login">
+            <Button variant="cta" size="md">
+              Sign In as Admin &rarr;
+            </Button>
+          </Link>
+        </div>
+      </PageTransition>
+    );
+  }
 
   return (
     <PageTransition className="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-8">

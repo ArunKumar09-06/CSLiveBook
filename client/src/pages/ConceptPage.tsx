@@ -376,7 +376,7 @@ export const ConceptPage: React.FC = () => {
             <div className="space-y-6">
               <CheatSheetViewer
                 data={
-                  cheatSheet || {
+                  cheatSheet?.content || cheatSheet || {
                     conceptCode: concept?.conceptCode || 'C1',
                     title: concept?.title || 'DBMS vs File System',
                     sections: [

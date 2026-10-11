@@ -10,7 +10,7 @@ export interface DiagramBlockData {
 }
 
 export const DiagramRenderer: React.FC<{ block: DiagramBlockData }> = ({ block }) => {
-  const key = block.visualKey.toUpperCase();
+  const key = (block?.visualKey || '').toUpperCase();
 
   switch (key) {
     case 'VB-1':

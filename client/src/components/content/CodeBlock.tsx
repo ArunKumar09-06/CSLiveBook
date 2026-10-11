@@ -26,7 +26,7 @@ export const CodeBlock: React.FC<{ block: CodeBlockData }> = ({ block }) => {
     }
   };
 
-  const lines = block.code.split('\n');
+  const lines = (block.code || '').split('\n');
 
   return (
     <div id={block.id} className="rounded-2xl glass-panel bg-bg-2 border border-surface-border overflow-hidden my-6">
