@@ -6,6 +6,8 @@ import { LandingPage } from './pages/LandingPage';
 import { CurriculumPage } from './pages/CurriculumPage';
 import { SubjectDetailPage } from './pages/SubjectDetailPage';
 import { ConceptPage } from './pages/ConceptPage';
+import { QuizRunnerPage } from './pages/QuizRunnerPage';
+import { QuizResultPage } from './pages/QuizResultPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
@@ -40,8 +42,12 @@ export default function App() {
             <Route path="subjects" element={<CurriculumPage />} />
             <Route path="subjects/:slug" element={<SubjectDetailPage />} />
 
-            {/* Master Concept Experience (3-column, blocks, video, cheatsheet, quiz) */}
+            {/* Master Concept Experience */}
             <Route path="concepts/:slug" element={<ConceptPage />} />
+
+            {/* Assessment Engine: Quiz Runner & Results */}
+            <Route path="concepts/:slug/quiz" element={<QuizRunnerPage />} />
+            <Route path="concepts/:slug/quiz/result" element={<QuizResultPage />} />
 
             {/* Auth Routes with 3D DataCube Scene */}
             <Route path="login" element={<LoginPage />} />

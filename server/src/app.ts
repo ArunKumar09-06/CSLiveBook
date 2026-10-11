@@ -16,6 +16,7 @@ import { authRouter } from './routes/auth.routes.js';
 import { curriculumRouter } from './routes/curriculum.routes.js';
 import { userRouter } from './routes/user.routes.js';
 import { searchRouter } from './routes/search.routes.js';
+import { assessmentRouter } from './routes/assessment.routes.js';
 
 export const createApp = (): Express => {
   const app = express();
@@ -77,6 +78,7 @@ export const createApp = (): Express => {
   apiRouter.use('/', curriculumRouter);
   apiRouter.use('/users', userRouter);
   apiRouter.use('/search', searchRouter);
+  apiRouter.use('/assessments', assessmentRouter);
   app.use('/api/v1', apiRouter);
 
   // 404 & Centralized Error Handler
