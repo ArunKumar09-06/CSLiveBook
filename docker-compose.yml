@@ -1,0 +1,53 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: csf_livebook_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=csf_livebook
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: csf_livebook_server
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=development
+      - SERVER_PORT=4000
+      - CLIENT_URL=http://localhost:5173
+      - MONGODB_URI=mongodb://mongodb:27017/csf_livebook
+      - JWT_ACCESS_SECRET=docker_compose_super_secret_jwt_access_32chars
+      - JWT_REFRESH_SECRET=docker_compose_super_secret_jwt_refresh_32chars
+      - COOKIE_DOMAIN=localhost
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    container_name: csf_livebook_client
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:4000/api/v1
+    depends_on:
+      - server
+
+volumes:
+  mongo-data:
