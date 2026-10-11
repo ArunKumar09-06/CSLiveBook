@@ -13,6 +13,9 @@ import { errorHandler } from './middleware/errorHandler.js';
 import { notFoundHandler } from './middleware/notFound.js';
 import { healthRouter } from './routes/health.routes.js';
 import { authRouter } from './routes/auth.routes.js';
+import { curriculumRouter } from './routes/curriculum.routes.js';
+import { userRouter } from './routes/user.routes.js';
+import { searchRouter } from './routes/search.routes.js';
 
 export const createApp = (): Express => {
   const app = express();
@@ -71,6 +74,9 @@ export const createApp = (): Express => {
   const apiRouter = express.Router();
   apiRouter.use('/', healthRouter);
   apiRouter.use('/auth', authRouter);
+  apiRouter.use('/', curriculumRouter);
+  apiRouter.use('/users', userRouter);
+  apiRouter.use('/search', searchRouter);
   app.use('/api/v1', apiRouter);
 
   // 404 & Centralized Error Handler

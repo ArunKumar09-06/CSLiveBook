@@ -4,7 +4,7 @@ import { env } from './env.js';
 let isConnected = false;
 
 export const connectDB = async (uri?: string): Promise<typeof mongoose> => {
-  if (isConnected && mongoose.connection.readyState === 1) {
+  if (mongoose.connection.readyState === 1) {
     return mongoose;
   }
 
